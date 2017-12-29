@@ -1,0 +1,7 @@
+# exclude everything inside vars directory
+ansible/production/vars/*
+
+# It's not possible to commit empty directories in git.
+# If you want to exclude all files within a directory,
+# you need to put something in it.
+!ansible/production/vars/.gitkeep

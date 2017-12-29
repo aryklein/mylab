@@ -1,0 +1,12 @@
+
+- name: Update all packages to the latest version
+  apt: upgrade=dist update_cache=yes
+
+# Fully quoted because of the ': ' on the line. See the Gotchas in the YAML docs.
+- name: Remove password prompt for sudo
+  lineinfile: "dest=/etc/sudoers state=present regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'"
+
+# Install and configure Vim 
+- name: Make sure Vim is installed
+  apt: name=vim state=latest
+
