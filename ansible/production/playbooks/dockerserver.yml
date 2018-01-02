@@ -41,3 +41,10 @@
 
     - name: Make sure a Docker service is running an enable
       systemd: state=started name=docker.service enabled=yes
+
+    - name: Append the group docker group to the list of users added before
+      user:
+        name: "{{ item.name }}"
+        groups: docker
+        append: yes
+      with_items: "{{ users_to_add }}"
