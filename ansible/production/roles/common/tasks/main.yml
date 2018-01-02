@@ -1,9 +1,9 @@
 ---
 
-- include: ubuntu-setup.yml
+- import_tasks: ubuntu-setup.yml
   when: ansible_distribution == "Ubuntu"
 
-- include: centos-setup.yml
+- import_tasks: centos-setup.yml
   when: ansible_distribution == "Centos"
 
 
