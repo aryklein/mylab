@@ -1,0 +1,25 @@
+
+- name: Deploy a Swarm cluster
+  hosts: swarm
+  remote_user: ubuntu
+  become: true
+  become_method: sudo   
+
+
+  tasks:
+
+    - name: Check if "swarm mode" is enabled.
+      command: docker info
+      register: docker_info
+
+    - name: Create a Swarm manager node
+      command: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
+      when: "docker_info.stdout.find('Swarm: active') == -1"
+
+    - name: Get the Swarm worker token 
+      command: docker swarm join-token -q worker
+      register: "swarm_worker_token"
+
+    - name: Print the toker
+      debug:
+        msg: "Token: {{ swarm_worker_token }}"
