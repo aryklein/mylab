@@ -1,10 +1,10 @@
+---
 
-- name: Deploy a Swarm cluster
-  hosts: swarm
+- name: Deploy swarm manager node
+  hosts: swarm-manager
   remote_user: ubuntu
   become: true
   become_method: sudo   
-
 
   tasks:
 
@@ -12,14 +12,50 @@
       command: docker info
       register: docker_info
 
+    - name: Declare the address of the first Swarm manager as a fact
+      set_fact:
+        docker_manager_address: "{{ ansible_default_ipv4.address }}"
+      when: inventory_hostname == ansible_play_hosts[0]
+
     - name: Create a Swarm manager node
-      command: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
+      command: docker swarm init --advertise-addr {{ docker_manager_address }}
+      when: 
+        - "docker_info.stdout.find('Swarm: active') == -1"
+        - inventory_hostname == ansible_play_hosts[0]
+
+    - name: Register swarm manager token 
+      command: docker swarm join-token -q manager
+      register: swarm_manager_token
+      when: inventory_hostname == ansible_play_hosts[0]
+
+    - name: Register swarm worker token 
+      command: docker swarm join-token -q worker
+      register: swarm_worker_token
+      when: inventory_hostname == ansible_play_hosts[0]
+
+    - name: Join the node to the swarm cluster as a manager
+#      command: docker swarm join --token {{ swarm_manager_token }} {{ docker_manager_address }}:2377
+      debug:
+        msg: "docker swarm join --token  {{ swarm_manager_token.stdout }} {{ docker_manager_address }}:2377"
+      when: 
+        - inventory_hostname == ansible_play_hosts[0]
+        - "docker_info.stdout.find('Swarm: active') == -1"
+
+
+- name: Deploy swarm worker nodes
+  hosts: swarm-worker
+  remote_user: ubuntu
+  become: true
+  become_method: sudo
+
+  tasks:
+
+    - name: Check if "swarm mode" is enabled.
+      command: docker info
+      register: docker_info
+
+    - name: Join the node to the swarm cluster as a worker
+      debug:
+        msg: "docker swarm join --token  {{ swarm_worker_token.stdout }} {{ docker_manager_address }}:2377"
       when: "docker_info.stdout.find('Swarm: active') == -1"
 
-    - name: Get the Swarm worker token 
-      command: docker swarm join-token -q worker
-      register: "swarm_worker_token"
-
-    - name: Print the toker
-      debug:
-        msg: "Token: {{ swarm_worker_token }}"
