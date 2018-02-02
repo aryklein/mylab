@@ -38,7 +38,7 @@
       debug:
         msg: "docker swarm join --token  {{ swarm_manager_token.stdout }} {{ docker_manager_address }}:2377"
       when: 
-        - inventory_hostname == ansible_play_hosts[0]
+        - inventory_hostname != ansible_play_hosts[0]
         - "docker_info.stdout.find('Swarm: active') == -1"
 
 
