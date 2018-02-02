@@ -1,8 +1,9 @@
 [dockerservers]
 10.100.2.42
+10.100.2.71
 
 [swarm-manager]
 10.100.2.42
 
 [swarm-worker]
-
+10.100.2.71
