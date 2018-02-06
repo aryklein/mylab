@@ -1,0 +1,15 @@
+#cloud-config
+
+apt_update: true
+apt_upgrade: true
+
+users:
+  - default
+  - name: ansible
+    gecos: Ansible User
+    groups: sudo
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    shell: /bin/bash
+    groups: sudo
+    ssh_authorized_keys:
+      - ssh-rsa AAAA[...] user1@host
