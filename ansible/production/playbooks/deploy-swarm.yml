@@ -6,6 +6,14 @@
   become: true
   become_method: sudo   
 
+  vars_files:
+    - vars/users.yml
+
+  roles:
+    - common
+    - users
+    - installdocker
+
   tasks:
 
     - name: Check if "swarm mode" is enabled.
@@ -46,6 +54,14 @@
   remote_user: ubuntu
   become: true
   become_method: sudo
+
+  vars_files:
+    - vars/users.yml
+
+  roles:
+    - common
+    - users
+    - installdocker
 
   tasks:
 
