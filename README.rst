@@ -1,6 +1,6 @@
 My Docker playground
 ====================
 
-This AWS lab is intended for testing Docker Swarm.
+This a personal AWS lab that I use to play with Docker Swarm.
 
-A couple of Ansible playbooks will setup a Docker Swarm cluster on Ubuntu 16.04 LTS servers using the Docker Engine's "Swarm Mode" 
+An Ansible playbook will deploy a Docker Swarm cluster on Ubuntu 16.04 LTS servers using the Docker Engine's "Swarm Mode". 
